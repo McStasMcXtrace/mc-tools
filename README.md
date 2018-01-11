@@ -1,9 +1,11 @@
 # mc-tools
-Some Monte Carlo tools for MCNP(X), PHITS and FLUKA
+Some Monte Carlo tools for MCNPX, PHITS and FLUKA
 
 Project homepage: https://github.com/kbat/mc-tools
 
-* MСNР(Х)
+* MСNРХ
+  * **Note:** These tools are for MCNPX. MCNP6 is not fully supported since we do not use it for several reasons.
+  * Emacs [syntax highlighting script](https://github.com/kbat/mc-tools/blob/master/mctools/mcnp/mcnpgen-mode.el) for MCNP
   * An implementation of application programming interface (API) to
     read tallies from **mctal** files into a
     [Tally](https://github.com/kbat/mc-tools/blob/master/mctools/mcnp/mctal.py)
@@ -56,7 +58,8 @@ Project homepage: https://github.com/kbat/mc-tools
     manual can be downloaded from the PHITS website:
     <http://phits.jaea.go.jp/examples.html> 
 * FLUKA
-  * See the [readfluka](http://code.google.com/p/readfluka) project.
+  * [usbsuw2root](https://github.com/kbat/mc-tools/blob/master/mctools/fluka/usbsuw2root.py) converter: it converts the USRBIN results into a TH3F histogram. Note that this tool does not directly convert the files produced by the USRBIN card, but these files must be processed by the $FLUTIL/usbsuw program which averages results and calculates statistical errors. The resulting file can be converted into ROOT by usbsuw2root. The $FLUTIL/usbsuw call must be done automatically if the fluka2root converter is used (see the [readfluka](https://github.com/kbat/readfluka) project).
+  * More FLUKA-related tools are available in the [readfluka](https://github.com/kbat/readfluka) project. Unfortunatelly most of these tools are of low quality, but sometimes they work.
 * Generic tools
   * A Python module to calculate atomic fractions of isotopes in a
     mixture for the given volume fractions of materials. Some examples
@@ -75,6 +78,7 @@ Project homepage: https://github.com/kbat/mc-tools
    ```import ROOT```  
    in the Python shell. You should not see any error messages.
 * If you are going to use the ```ace2root``` converter, you need to have [PyNE](http://pyne.io) toolkit to be installed.
+* The FLUKA-related tools depend on [flair](http://www.fluka.org/flair) and assume it is installed in the `/usr/local/flair` folder. If your flair is installed in a different location, add it (as well as the `lib` subfolder) into $PYTHONPATH.
 
 ## Installation ##
 Linux and MacOS are supported. However, we never tried yet to use these tools on Windows.
@@ -99,7 +103,7 @@ Uninstall: ```pip uninstall mc-tools```.
 ```export MCTOOLS=/path/to/mc-tools/mctools```
 3. Update your PHYTHONPATH (add this line in ~/.bashrc in order to
    save this setting for your future sessions):   
-```export PYTHONPATH=$MCTOOLS/phits:$MCTOOLS/mcnp:$PYTHONPATH```
+```export PYTHONPATH=$MCTOOLS:$PYTHONPATH```
 4. Add the folders with necessary scripts in your $PATH or create symblinks to these scrips:
 ```export PATH=$MCTOOLS/mcnp:$PATH``` or
 ```ln -s $MCTOOLS/mcnp/mctal2root.py ~/bin/mctal2root```

@@ -1,8 +1,8 @@
 #! /usr/bin/python -W all
 #
-#  A script to convert ANGEL (PHITS) output to the ROOT format
+#  A script to convert ANGEL (PHITS) output into the ROOT format
 #  Author: Konstantin Batkov
-#  Contact: kbat.phits ((at)) lizardie.com
+#  Contact: batkov@gmail.com
 #
 #  Usage: angel2root.py file.dat
 #
@@ -147,7 +147,7 @@ class Angel:
                     self.reg.append(r)
                 if DEBUG: print "reg: ", self.reg
                 continue
-            if re.search("^n[eartxyz] = ", line.strip()): # !!! make sence if we specify number of bins but not the bin's width
+            if re.search("^n[eartxyz] = ", line.strip()): # !!! make sence if we specify number of bins but not the bin width
                 words = line.split()
                 self.dict_nbins[words[0]] = int(words[2])
                 self.last_nbins_read = words[0]
@@ -460,18 +460,24 @@ class Angel:
         if len(words) != 15:
             print words
             print len(words)
-            print "Read2DHist: format error"
-            exit(1)
+            sys.exit("Read2DHist: format error")
 #        print words
 
         dy = float(words[6])
         ymin = float(words[2])
         ymax = float(words[4])
-        if ymin<ymax:
-            ymin,ymax = ymin-dy/2.0,ymax+dy/2.0
-        else:
-            ymin,ymax = ymax-dy/2.0, ymin+dy/2.0
-        ny = int(round((ymax-ymin)/dy))
+        if dy>0:
+            if ymin<ymax:
+                ymin,ymax = ymin-dy/2.0,ymax+dy/2.0
+            else:
+                ymin,ymax = ymax-dy/2.0, ymin+dy/2.0
+        elif dy<0:
+            if ymin<ymax:
+                sys.exit("Fix me: ymin<ymax when dy<0")
+#                ymin,ymax = ymin-dy/2.0,ymax+dy/2.0
+            else:
+                ymin,ymax = ymax+dy/2.0, ymin-dy/2.0
+        ny = abs(int(round((ymax-ymin)/dy)))
         if DEBUG: print "y:", dy, ymin, ymax, ny
 
         dx = float(words[13])
@@ -590,8 +596,8 @@ def main():
     """
     angel2root - ANGEL to ROOT converter
     """
-    parser = argparse.ArgumentParser(
-        description="angel2root - ANGEL to ROOT converter.")
+    parser = argparse.ArgumentParser(description=main.__doc__, epilog="Homepage: https://github.com/kbat/mc-tools")
+
     parser.add_argument("-a", "--average", action="store_true",
                         help="set the TH1.kIsAverage bit for averaging")
     parser.add_argument("infilename", action="store", nargs=1, type=str,
